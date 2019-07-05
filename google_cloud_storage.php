@@ -113,6 +113,33 @@
 		}
 	}
 
+	/**
+	 * Generate a v4 signed URL for downloading an object.
+	 * By using this url, can show image directly in web page without downloading image into server.
+	 * @param string $bucketName the name of your Google Cloud bucket.
+	 * @param string $objectName the name of your Google Cloud object.
+	 *
+	 * @return void
+	 */
+	function get_object_v4_signed_url($objectName) {
+		# $objectName must be file path. eg: $objectName = 'picture/2019/06/flower.jpg';
+		$cloud = parent::connect_to_google_cloud_storage();
+		$storage = $cloud[0];
+		$bucketName = $cloud[1];
+		$bucket = $storage->bucket($bucketName);
+		$object = $bucket->object($objectName);
+		$url = $object->signedUrl(
+		# This URL is valid for 15 minutes
+		new \DateTime('15 min'),
+			[
+				'version' => 'v4'
+			]
+		);
+		# example code to show image in web page
+		# <img src="$url">
+		return $url;
+	}
+
 
 
 ?>
